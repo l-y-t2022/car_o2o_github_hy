@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <!--配置缓存策略-->
+    <defaultCache
+            maxElementsInMemory="1000"
+            eternal="false"
+            timeToIdleSeconds="600"
+            timeToLiveSeconds="600"
+            memoryStoreEvictionPolicy="LRU">
+    </defaultCache>
+    <!--可以定义多个缓存区域 map-->
+
+</ehcache>

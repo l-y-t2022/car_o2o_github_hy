@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wolfcode.mapper.EmployeeMapper">
+
+  <delete id="deleteByPrimaryKey">
+    delete from employee
+    where id = #{id}
+  </delete>
+  <delete id="deleteRelation">
+    delete from employee_role where employee_id=#{employee_id}
+  </delete>
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+    insert into employee (username, name, password, email, age, admin, dept_id,salt
+      )
+    values (#{username}, #{name}, #{password}, #{email}, #{age}, #{admin}, #{dept.id},#{salt}
+      )
+  </insert>
+    <insert id="insertRelation">
+      insert into employee_role values (#{employeeId},#{roleId})
+    </insert>
+    <update id="updateByPrimaryKey">
+    update employee
+    set
+      name = #{name},
+      email = #{email},
+      age = #{age},
+      admin = #{admin},
+      dept_id = #{dept.id}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, username, name, password, email, age, admin, dept_id AS d_id
+    from employee
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, username, name, password, email, age, admin, dept_id
+    from employee
+  </select>
+
+  <resultMap id="BaseResultMap" type="cn.wolfcode.domain.Employee">
+    <id column="id" property="id" />
+    <result column="username" property="username" />
+    <result column="name" property="name" />
+    <result column="password" property="password" />
+    <result column="email" property="email" />
+    <result column="age" property="age" />
+    <result column="admin" property="admin" />
+    <result column="salt" property="salt" />
+    <result column="d_id" property="dept.id" />
+    <result column="d_name" property="dept.name" />
+    <result column="d_sn" property="dept.sn" />
+  </resultMap>
+  <select id="selectForList" resultMap="BaseResultMap">
+    SELECT e.id,e.username,e.name,e.password,e.email,e.age,e.admin,d.id d_id,d.name d_name,d.sn d_sn
+    FROM employee e JOIN department d ON e.dept_id=d.id
+    <where>
+      <if test="keyword != null and keyword != ''">
+        AND (e.name like concat('%',#{keyword},'%') or e.email like concat('%',#{keyword},'%') )
+      </if>
+      <if test="deptId !=null">
+        and e.dept_id=#{deptId}
+      </if>
+    </where>
+  </select>
+    <select id="selectByUsername" resultType="cn.wolfcode.domain.Employee">
+      select id, username, name, password, email, age, admin, dept_id,salt
+      from employee
+      where username=#{username}
+    </select>
+  <select id="selectByUsernameAndPassword" resultType="cn.wolfcode.domain.Employee">
+    select id, username, name, password, email, age, admin, dept_id
+    from employee
+    where username=#{username} AND password=#{password}
+  </select>
+</mapper>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>数据字典数据管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>数据字典数据管理</h1>
+            </section>
+            <!--希望这个添加页面要显示数据字典的名称(在页面显示)和类型(类型要传到后台存储数据)-->
+            <section class="content">
+                <div class="box">
+                    <!--高级查询--->
+                    <form class="form-inline" id="searchForm" action="/sysDictData/list" method="post">
+                        <input type="hidden" name="currentPage" id="currentPage" value="1">
+                        <a th:href="|/sysDictData/input?type=${sysDictType.type}|" class="btn btn-success btn-input" style="margin: 10px">
+                            <span class="glyphicon glyphicon-plus"></span> 添加
+                        </a>
+                        <span style="font-size: 15px" class="label label-default" th:text="${sysDictType.name}"></span>
+                    </form>
+                    <!--编写内容-->
+                    <div class="box-body table-responsive ">
+                        <table class="table table-hover table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>类型</th>
+                                <th>标签</th>
+                                <th>键值</th>
+                                <th>排序</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sysDictData:${pageInfo.list}">
+                                <td th:text="${sysDictData.id}"></td>
+                                <td th:text="${sysDictData.type}"></td>
+                                <td th:text="${sysDictData.label}"></td>
+                                <td th:text="${sysDictData.value}"></td>
+                                <td th:text="${sysDictData.sort}"></td>
+                                <td th:text="${sysDictData.remark}"></td>
+                                    <td>
+                                        <a  th:href="|/sysDictData/input?id=${sysDictData.id}&type=${sysDictType.type}|" class="btn btn-info btn-xs btn-input">
+                                            <span class="glyphicon glyphicon-pencil"></span> 编辑
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:replace="common/fragment :: page"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+</body>
+</html>

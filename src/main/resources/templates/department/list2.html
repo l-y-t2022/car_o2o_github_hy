@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>部门管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>部门管理</h1>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <!--高级查询--->
+                    <form class="form-inline" id="searchForm" action="/department/list" method="post">
+                        <input type="hidden" name="currentPage" id="currentPage" value="1">
+                        <a href="#" class="btn btn-success btn-input" style="margin: 10px">
+                            <span class="glyphicon glyphicon-plus"></span> 添加
+                        </a>
+                    </form>
+                    <!--编写内容-->
+                    <div class="box-body table-responsive ">
+                        <table class="table table-hover table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>部门名称</th>
+                                <th>部门编号</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="department:${pageInfo.list}">
+                                    <td th:text="${department.id}"></td>
+                                    <td th:text="${department.name}"></td>
+                                    <td th:text="${department.sn}"></td>
+                                    <td>
+                                        <a href="#" class="btn btn-info btn-xs btn-input">
+                                            <span class="glyphicon glyphicon-pencil"></span> 编辑
+                                        </a>
+                                        <a th:data-url="|/department/delete?id=${department.id}|" class="btn btn-danger btn-xs btn-delete">
+                                            <span class="glyphicon glyphicon-trash"></span> 删除
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                       <!-- &lt;!&ndash;希望页面分页插件显示当前页和总页数，是后端提供的数量&ndash;&gt;
+                        <ul id="pagination-demo" class="pagination-sm"></ul>
+                        <script th:inline="javascript">
+                            $('#pagination-demo').twbsPagination({
+                                totalPages: /*[[${pageInfo.pages}]]*/1,
+                                startPage: /*[[${pageInfo.pageNum}]]*/1,
+                                visiblePages: 3,
+                                first:'首页',
+                                prev:'上一页',
+                                next:'下一页',
+                                last:'尾页',
+                                onPageClick: function (event, page) {
+                                    $('#currentPage').val(page);
+                                    $('#searchForm').submit();
+                                }
+                            });
+                        </script>-->
+                        <div th:replace="common/fragment :: page"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">部门编辑</h4>
+                </div>
+                <form action="/department/saveOrUpdate" method="post">
+                    <input type="hidden" name="id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">名称</label>
+                            <input type="text" class="form-control" name="name" id="name" placeholder="名称">
+                        </div>
+                        <div class="form-group">
+                            <label for="sn">缩写</label>
+                            <input type="text" class="form-control" name="sn" id="sn" placeholder="缩写">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+
+                    <script>
+                        //给添加按钮绑定模态框
+                        $('.btn-input').click(function () {
+                            $('.modal').modal('show');//模态框的显示
+                        });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

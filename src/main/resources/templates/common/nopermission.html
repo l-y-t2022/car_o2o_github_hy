@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>叩丁狼客户管理系统</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content">
+                <div class="error-page">
+                    <h2 class="headline text-yellow"></h2>
+                    <div class="error-content">
+                        <h3><i class="fa fa-warning text-yellow"></i> 您没有足够的权限访问该页面 </h3>
+                        <p>若要继续访问 ，请联系管理员开通 ，联系方式 ：020-85628002</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+</body>
+</html>

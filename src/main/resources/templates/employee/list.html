@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>员工管理</h1>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <!--高级查询--->
+                    <div style="margin: 10px;">
+                        <form class="form-inline" id="searchForm" action="/employee/list" method="post">
+                            <input type="hidden" name="currentPage" id="currentPage" value="1" th:value="${qo.currentPage}">
+                            <div class="form-group">
+                                <label for="keyword">关键字:</label>
+                                <input type="text" class="form-control" id="keyword" name="keyword" placeholder="请输入姓名/邮箱" th:value="${qo.keyword}">
+                            </div>
+                            <div class="form-group">
+                                <label for="dept"> 部门:</label>
+                                <select class="form-control" id="dept" name="deptId">
+                                    <option value="">全部</option>
+                                    <option th:each="department:${departments}"
+                                            th:value="${department.id}"
+                                            th:text="${department.name}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span> 查询</button>
+                            <a href="/employee/input" class="btn btn-success btn-input">
+                                <span class="glyphicon glyphicon-plus"></span> 添加
+                            </a>
+                        </form>
+                    </div>
+                    <div class="box-body table-responsive ">
+                        <table class="table table-hover table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" id="allCb"></th>
+                                <th>编号</th>
+                                <th>用户名</th>
+                                <th>真实姓名</th>
+                                <th>邮箱</th>
+                                <th>年龄</th>
+                                <th>部门</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="employee:${pageInfo.list}">
+                                    <td><input type="checkbox" class="cb"></td>
+                                    <td th:text="${employee.id}">1</td>
+                                    <td th:text="${employee.username}">zs</td>
+                                    <td th:text="${employee.name}">张三</td>
+                                    <td th:text="${employee.email}">zs@126.com</td>
+                                    <td th:text="${employee.age}">21</td>
+                                    <td th:text="${employee?.dept?.name}">开发部</td>
+                                    <td>
+                                        <a th:href="|/employee/input?id=${employee.id}|" class="btn btn-info btn-xs btn_redirect">
+                                            <span class="glyphicon glyphicon-pencil"></span> 编辑
+                                        </a>
+                                        <a shiro:hasPermission="employee:delete" th:data-url="|/employee/delete?id=${employee.id}|" class="btn btn-danger btn-xs btn-delete">
+                                            <span class="glyphicon glyphicon-trash"></span> 删除
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:replace="common/fragment :: page"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+</body>
+</html>

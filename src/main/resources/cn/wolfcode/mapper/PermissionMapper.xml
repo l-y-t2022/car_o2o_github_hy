@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wolfcode.mapper.PermissionMapper" >
+  <resultMap id="BaseResultMap" type="cn.wolfcode.domain.Permission" >
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="expression" property="expression" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" >
+    delete from permission
+    where id = #{id}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into permission (name, expression)
+    values (#{name}, #{expression})
+  </insert>
+    <insert id="batchInsert">
+      insert into permission (name, expression)
+      values
+    <foreach collection="permission" separator="," item="permission">
+      (#{permission.name},#{permission.expression})
+    </foreach>
+    </insert>
+    <update id="updateByPrimaryKey" >
+    update permission
+    set name = #{name},
+      expression = #{expression}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select id, name, expression
+    from permission
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, name, expression
+    from permission
+    order by expression
+  </select>
+    <select id="selectForList" resultType="cn.wolfcode.domain.Permission">
+      select * from permission
+    </select>
+    <select id="queryByRoleId" resultType="cn.wolfcode.domain.Permission">
+      SELECT p.id,p.name,p.expression
+      from role_permission rp join permission p
+    on rp.permission_id=p.id
+      WHERE rp.role_id=#{role_id}
+    </select>
+    <select id="selectExpressionsByEmploeeId" resultType="java.lang.String">
+      SELECT DISTINCT p.expression from employee_role er
+                                          join role_permission rp on er.role_id=rp.role_id
+                                          join permission p on rp.permission_id = p.id
+      WHERE er.employee_id=#{employee_id}
+    </select>
+</mapper>

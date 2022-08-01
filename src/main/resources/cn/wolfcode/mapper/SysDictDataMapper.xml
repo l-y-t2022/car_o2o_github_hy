@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wolfcode.mapper.SysDictDataMapper" >
+  <resultMap id="BaseResultMap" type="cn.wolfcode.domain.SysDictData" >
+    <id column="id" property="id" />
+    <result column="type" property="type" />
+    <result column="label" property="label" />
+    <result column="value" property="value" />
+    <result column="sort" property="sort" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" >
+    delete from sys_dict_data
+    where id = #{id}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into sys_dict_data (type, label, value, sort, remark)
+    values (#{type}, #{label}, #{value}, #{sort}, #{remark})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update sys_dict_data
+    set type = #{type},
+      label = #{label},
+      value = #{value},
+      sort = #{sort},
+      remark = #{remark}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select id, type, label, value, sort, remark
+    from sys_dict_data
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, type, label, value, sort, remark
+    from sys_dict_data
+  </select>
+    <select id="selectForList" resultType="cn.wolfcode.domain.SysDictData">
+      select id, type, label, value, sort, remark
+      from sys_dict_data
+    where type=#{type}
+    </select>
+    <select id="selectByType" resultMap="BaseResultMap">
+      select id, type, label, value, sort, remark
+      from sys_dict_data
+        where type = #{type}
+    </select>
+</mapper>

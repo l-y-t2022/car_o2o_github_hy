@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.wolfcode.mapper.CustomerMapper" >
+  <resultMap id="BaseResultMap" type="cn.wolfcode.domain.Customer" >
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="phone" property="phone" />
+    <result column="source_label" property="source.label" />
+    <result column="source_value" property="source.value" />
+    <result column="school_label" property="school.label" />
+    <result column="school_value" property="school.value" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" >
+    delete from customer
+    where id = #{id}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into customer (name, phone, source_value, school_value)
+    values (#{name}, #{phone}, #{source.value}, #{school.value})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update customer
+    set name = #{name},
+      phone = #{phone},
+      source_value = #{source.value},
+      school_value = #{school.value}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+    select id, name, phone, source_value, school_value
+    from customer
+    where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, name, phone, source_value, school_value
+    from customer
+  </select>
+    <select id="selectForList" resultMap="BaseResultMap">
+      SELECT c.id,c.name,c.phone,
+             source.label source_label,source.value source_value,
+             school.label school_label,school.value school_value
+      from customer c
+             join sys_dict_data source ON c.source_value=source.value
+             JOIN sys_dict_data school ON c.school_value=school.value
+    </select>
+</mapper>

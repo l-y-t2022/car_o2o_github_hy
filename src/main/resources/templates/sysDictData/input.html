@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>数据字典管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>数据字典编辑</h1>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <form class="form-horizontal" action="/sysDictData/saveOrUpdate" method="post" id="editForm">
+                        <input type="hidden" name="id" th:value="${sysDictData?.id}">
+                        <div class="form-group"  style="margin-top: 10px;">
+                            <label  class="col-sm-2 control-label">数据字典类型：</label>
+                            <div class="col-sm-6">
+                                <!--readonly会传参数-->
+                                <input type="text" class="form-control" th:readonly="${sysDictData != null}" placeholder="请输入数据字典类型" th:value="${sysDictType?.name}">
+                                <input type="hidden" name="type" th:value="${sysDictType?.type}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">数据字典标签：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="label" placeholder="请输入数据字典标签" th:value="${sysDictData?.label}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">数据字典键值：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="value" placeholder="请输入数据字典键值" th:value="${sysDictData?.value}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">数据字典排序：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="sort" placeholder="请输入数据字典排序" th:value="${sysDictData?.sort}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">数据字典备注：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="remark" placeholder="请输入数据字典备注" th:value="${sysDictData?.remark}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-6">
+                                <button type="submit" class="btn btn-primary btn-submit">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+
+
+</body>
+</html>

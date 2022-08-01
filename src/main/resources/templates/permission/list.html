@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>权限管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>权限管理</h1>
+            </section>
+            <section class="content">
+                <div class="box" >
+                    <!--高级查询--->
+                    <form class="form-inline" id="searchForm" action="/permission/list" method="post">
+                        <input type="hidden" name="currentPage" id="currentPage" value="1">
+                        <a href="javascript:void(0)" class="btn btn-success btn-reload" style="margin: 10px;">
+                            <span class="glyphicon glyphicon-repeat"></span>  重新加载
+                        </a>
+                        <a href="javascript:void(0)" class="btn btn-success" style="margin: 10px;">
+                            <span class="glyphicon glyphicon-repeat" onclick="inputOp()"></span>  新增
+                        </a>
+                        <a href="#" class="btn btn-warning btn-input" style="margin: 10px" onclick="exportFn()">
+                            <span class="glyphicon glyphicon-save"></span> 导出
+                        </a>
+                        <a href="#" class="btn btn-info btn-input" style="margin: 10px" onclick="importFn()">
+                            <span class="glyphicon glyphicon-open"></span> 导入
+                        </a>
+                    </form>
+                    <script>
+                        function exportFn() {
+                            window.open("/permission/exportExcel");
+                        }
+                        function importFn() {
+                            $('#importModal').modal("show");
+                        }
+                    </script>
+                    <div class="box-body table-responsive ">
+                        <!--<table class="table table-hover table-bordered table-striped" >
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>权限名称</th>
+                                <th>权限表达式</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="permission:${pageInfo.list}">
+                                    <td th:text="${permission.id}"></td>
+                                    <td th:text="${permission.name}"></td>
+                                    <td th:text="${permission.expression}"></td>
+                                </tr>
+                            </tbody>
+                        </table>-->
+                        <table id="table"></table>
+
+<!--                        <div th:replace="common/fragment :: page"></div>-->
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="permissionModel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">权限编辑</h4>
+                </div>
+                <form action="/permission/saveOrUpdate" method="post">
+                    <input type="hidden" name="id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">权限名称</label>
+                            <input type="text" class="form-control" name="name" id="name" placeholder="名称">
+                        </div>
+                        <div class="form-group">
+                            <label for="sn">权限表达式</label>
+                            <input type="text" class="form-control" name="expression" id="sn" placeholder="权限表达式">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框 -->
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">导入</h4>
+                </div>
+                <form class="form-horizontal"  enctype="multipart/form-data" method="post" id="importForm">
+                    <div class="modal-body">
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="uploadFile" class="col-sm-3 control-label"></label>
+                            <div class="col-sm-6">
+                                <!-- 文件上传框 -->
+                                <input id="uploadFile" type="file" name="file"/>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6">
+                                <a href="#" onclick="downloadTemplateFn()" class="btn btn-success" >
+                                    <span class="glyphicon glyphicon-download"></span> 下载模板
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" onclick="importSaveFn()" class="btn btn-primary btn-submit">上传</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        //新增,显示模态框,发送ajax请求
+        function inputOp() {
+            //显示模态框
+            $('#permissionModel').modal('show')
+
+        }
+        //编辑函数
+        function editOp(id) {
+
+        }
+        //删除函数
+        function deleteOp(id) {
+            Swal.fire({
+                title: '您确定要删除吗？',
+                text: "此操作不可撤销!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if(result.value) {
+                    // 点了确定做什么，由开发者决定
+                    location.href = '/permission/delete?id='+id;
+                }
+            });
+        }
+      /*  //设置需要显示的列
+        var columns = [
+            {
+                checkbox:true
+            },{
+                field:"Id",
+                title: '产品ID'
+            }, {
+                field: 'ProductName',
+                title: '产品名称'
+            } ];
+
+        //需要显示的数据
+        var data = [{
+            Id: 1000,
+            ProductName: '香蕉',
+            StockNum: '100'
+        }, {
+            Id: 1002,
+            ProductName: '苹果',
+            StockNum: '200'
+        }, {
+            Id: 1003,
+            ProductName: '苹果',
+            StockNum: '200'
+        }, {
+            Id: 1004,
+            ProductName: '苹果',
+            StockNum: '200'
+        }];
+        //bootstrap table初始化数据
+        $('#table').bootstrapTable({
+            url:'/permission/listData',
+            columns: columns,
+            data: data
+        });*/
+        /*利用boostrap-table显示数据*/
+        //设置需要显示的列
+        $('#table').bootstrapTable({
+            url: '/permission/listData',
+            method: 'GET',   //数据请求方式
+            sidePagination:'server',//服务端分页
+            pagination:true,//开启分页
+            pageNumber:1, //当前地基页
+            pageSize:5, //每页显示数据条数
+            uniqueId:"id",
+            columns: [{
+                field: 'id',
+                title: '编号'
+            }, {
+                field: 'name',
+                title: '权限名称'
+            }, {
+                field: 'expression',
+                title: '权限表达式'
+            }, {
+                title: '操作',
+                align: 'center',
+                formatter: function(value, row, index) {
+                    console.log(row);
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="editOp('+row.id+')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs btn-delete" href="javascript:void(0)" onclick="deleteOp('+row.id+')"><i class="fa fa-remove"></i>删除</a> ');
+                    return actions.join('');
+                }
+            }]
+        });
+        function downloadTemplateFn(){
+            window.open('/static/permission.xls')
+        }
+        function importSaveFn(){
+            // 判断文件是否为空
+            if (!$("#uploadFile").val()) {
+                Swal.fire({
+                    text: "请选择上传的目标文件! ",
+                    icon: 'warning'
+                });
+                return;
+            }
+
+            var formData = new FormData(); // 这里需要实例化一个 FormData 来封装上传的文件
+            formData.append("file", $("#uploadFile")[0].files[0]);
+
+            $.ajax({
+                type : "post",
+                url : "/permission/importExcel",
+                data : formData,
+                processData : false,
+                contentType : false,
+                success : function(data){
+                    if (data.success) {
+                        Swal.fire({
+                            text: data.msg,
+                            icon: 'success'
+                        });
+                        location.href = '/permission/list';
+                    }else{
+                        Swal.fire({
+                            text: "导入失败",
+                            icon: 'error'
+                        });
+                    }}
+            });
+        }
+        $('.btn-reload').click(function () {
+            Swal.fire({
+                title: '您确定要加载权限吗？',
+                text: "此操作不可撤销!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if(result.value) {
+                    // 发送ajax请求
+                    $.post('/permission/load',function (data) {
+                        if (data.success) {
+                            location.href='/permission/list';
+                        } else {
+                            Swal.fire(data.msg);
+                        }
+                    });
+                }
+            });
+        })
+    </script>
+</body>
+</html>

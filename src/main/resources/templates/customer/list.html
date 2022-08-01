@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>客户管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>客户管理</h1>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <!--高级查询--->
+                    <form class="form-inline" id="searchForm" action="/customer/list" method="post">
+                        <input type="hidden" name="currentPage" id="currentPage" value="1">
+                        <a href="/customer/input" class="btn btn-success btn-input" style="margin: 10px">
+                            <span class="glyphicon glyphicon-plus"></span> 添加
+                        </a>
+                    </form>
+                    <!--编写内容-->
+                    <div class="box-body table-responsive ">
+                        <table class="table table-hover table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>名称</th>
+                                <th>手机</th>
+                                <th>来源渠道</th>
+                                <th>意向校区</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="customer:${pageInfo.list}">
+                                <td th:text="${customer.id}"></td>
+                                <td th:text="${customer.name}"></td>
+                                <td th:text="${customer.phone}"></td>
+                                <td th:text="${customer.source.label}"></td>
+                                <td th:text="${customer.school.label}"></td>
+                                <td>
+                                    <a th:href="|/customer/input?id=${customer.id}|" class="btn btn-info btn-xs btn-input">
+                                        <span class="glyphicon glyphicon-pencil"></span> 编辑
+                                    </a>
+                                </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div th:replace="common/fragment :: page"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+
+</body>
+</html>

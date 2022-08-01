@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理</title>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div th:replace="common/fragment :: link"></div>
+    <div class="wrapper">
+        <div th:replace="common/fragment :: navbar"></div>
+        <div th:replace="common/fragment :: menu"></div>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>员工编辑</h1>
+            </section>
+            <section class="content">
+                <div class="box">
+                    <form class="form-horizontal" action="/employee/saveOrUpdate" method="post" id="editForm" >
+                        <input type="hidden" name="id" th:value="${employee?.id}">
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label class="col-sm-2 control-label">用户名：</label>
+                            <div class="col-sm-6">
+                                <input type="text" th:disabled="${employee != null}" class="form-control" name="username" placeholder="请输入用户名" th:value="${employee?.username}">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label class="col-sm-2 control-label">真实姓名：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="name"  placeholder="请输入真实姓名" th:value="${employee?.name}">
+                            </div>
+                        </div>
+                        <div class="form-group" th:if="${employee == null}">
+                            <label for="password" class="col-sm-2 control-label">密码：</label>
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" th:value="${employee?.password}">
+                            </div>
+                        </div>
+                        <div class="form-group" th:if="${employee == null}">
+                            <label for="repassword" class="col-sm-2 control-label">验证密码：</label>
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control" id="repassword" name="repassword" placeholder="再输入一遍密码" th:value="${employee?.password}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-2 control-label">电子邮箱：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="email" name="email" placeholder="请输入邮箱" th:value="${employee?.email}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="age" class="col-sm-2 control-label">年龄：</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="age" name="age" placeholder="请输入年龄" th:value="${employee?.age}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dept" class="col-sm-2 control-label">部门：</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" id="dept" name="dept.id">
+                                    <option value="">请选择</option>
+                                        <option th:each="department:${departments}"
+                                                th:text="${department.name}"
+                                                th:value="${department.id}"
+                                                th:selected="${employee?.dept?.id == department.id}"
+                                        ></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="adminDiv">
+                            <label for="admin" class="col-sm-2 control-label">超级管理员：</label>
+                            <div class="col-sm-6" style="margin-left: 15px;">
+                                <input type="checkbox" id="admin" name="admin" class="checkbox" th:checked="${employee?.admin}">
+                            </div>
+                        </div>
+                        <div class="form-group" id="roleDiv">
+                            <label for="role" class="col-sm-2 control-label">分配角色：</label><br/>
+                            <div class="row" style="margin-top: 10px">
+                                <div class="col-sm-2 col-sm-offset-2">
+                                    <select multiple class="form-control allRoles" id="role" style="height: 350px;" size="15">
+                                            <option th:each="role:${roles}"
+                                                    th:text="${role.name}"
+                                                    th:value="${role.id}"
+                                            ></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1" style="margin-top: 60px;" align="center">
+                                    <div>
+
+                                        <a type="button" class="btn btn-primary  " style="margin-top: 10px" title="右移动"
+                                           onclick="moveSelected('allRoles', 'selfRoles')">
+                                            <span class="glyphicon glyphicon-menu-right"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a type="button" class="btn btn-primary " style="margin-top: 10px" title="左移动"
+                                           onclick="moveSelected('selfRoles', 'allRoles')">
+                                            <span class="glyphicon glyphicon-menu-left"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a type="button" class="btn btn-primary " style="margin-top: 10px" title="全右移动"
+                                           onclick="moveAll('allRoles', 'selfRoles')">
+                                            <span class="glyphicon glyphicon-forward"></span>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a type="button" class="btn btn-primary " style="margin-top: 10px" title="全左移动"
+                                           onclick="moveAll('selfRoles', 'allRoles')">
+                                            <span class="glyphicon glyphicon-backward"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select multiple class="form-control selfRoles" style="height: 350px;" size="15" name="roleIds">
+                                        <option th:each="role:${ownRoles}"
+                                                th:value="${role.id}"
+                                                th:text="${role.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-6">
+                                <button type="submit" class="btn btn-primary btn-submit">保存</button>
+                                <a href="javascript:window.history.back()" class="btn btn-danger">取消</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div th:replace="common/fragment :: footer"></div>
+    </div>
+<script>
+
+    function moveSelected(srcClass,targetClass) {
+        $('.'+targetClass).append($('.'+srcClass+'>option:selected'));
+    }
+    function moveAll(srcClass,targetClass) {
+        $('.'+targetClass).append($('.'+srcClass+'>option'));
+    }
+    var $temp;
+    $('#admin').click(function () {
+        //选中时，移除分配角色的元素
+        var checked = $(this).prop("checked");
+
+        if (checked) {
+            //选中
+            $temp = $('#roleDiv');
+            $('#roleDiv').remove();
+        } else {
+            //不选中
+            $('#adminDiv').after($temp);
+        }
+    })
+
+    //若页面加载完成后发现修改员工时是管理员，移除分配角色页面元素
+    if ($('#admin').prop("checked")) {
+        $temp=$('#roleDiv').remove();
+    }
+    //前端插件，验证用户输入的信息是否正确
+    //会绑定submit按钮，在表单提交之前也会验证
+    $("#editForm").bootstrapValidator({
+        feedbackIcons: { // 图标
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields:{ // 配置要验证的字段
+            username:{
+                validators:{ // 验证的规则
+                    notEmpty:{ // 不能为空
+                        message:"用户名必填" // 错误时的提示信息
+                    },
+                    stringLength: { // 字符串的长度范围
+                        min: 1,
+                        max: 5
+                    },
+                    remote: { // 远程验证
+                        type: 'get', // 请求方式
+                        url: '/employee/checkUserName', // 请求地址
+                        message: '用户名已经存在', // 验证不通过时的提示信息
+                        delay: 3000, // 输入内容 1 秒后发请求
+                        /* data: function() {  自定义提交的参数，默认只会提交当前用户名 input 的参数
+                            return {
+                                username: $('[name="username"]').val()
+                            };
+                        } */
+                    }
+                }
+            },
+            name:{
+                validators:{ // 验证的规则
+                    notEmpty:{ // 不能为空
+                        message:"姓名必填" // 错误时的提示信息
+                    },
+                    stringLength: { // 字符串的长度范围
+                        min: 1,
+                        max: 5
+                    }
+                }
+            },
+            password:{
+                validators:{
+                    notEmpty:{ // 不能为空
+                        message:"密码必填" // 错误时的提示信息
+                    },
+                }
+            },
+            repassword:{
+                validators:{
+                    notEmpty:{ // 不能为空
+                        message:"密码必填" // 错误时的提示信息
+                    },
+                    identical: {// 两个字段的值必须相同
+                        field: 'password',
+                        message: '两次输入的密码必须相同'
+                    },
+                }
+            },
+            email: {
+                validators: {
+                    emailAddress: {} // 邮箱格式
+                }
+            },
+            age:{
+                validators: {
+                    between: { // 数字的范围
+                        min: 18,
+                        max: 60
+                    }
+                }
+            }
+        }
+    }).on('success.form.bv', function(e) {//在表单验证通过之后执行这个函数
+        //发送同步请求
+        //让右边的下拉框中option全部选中
+        $('.selfRoles > option').prop('selected', 'true');
+
+        // TODO 这里可以改成用异步的方式提交表单
+        //可以发送ajax请求，首先阻止表单的提交
+    });
+
+</script>
+</body>
+</html>
