@@ -7,6 +7,7 @@ public class Animals {
     private String name;
     private Integer age;
 
+    private String sn;
     public Animals(String name, Integer age) {
         this.name = name;
         this.age = age;
