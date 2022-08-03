@@ -12,4 +12,7 @@ public class Animals {
         this.name = name;
         this.age = age;
     }
+
+    public Animals() {
+    }
 }
